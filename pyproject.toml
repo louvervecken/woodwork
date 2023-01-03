@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "woodwork"
+version = "0.1.0"
+description = "Woodwork projects using CadQuery, mainly focussed on furniture using sheet wood for now"
+authors = ["louvervecken <lou.vervecken@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.11"
+cadquery-server = {extras = ["cadquery"], version = "^0.4.1"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

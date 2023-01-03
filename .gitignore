@@ -1,0 +1,6 @@
+venv/*
+__pycache__/*
+kinderkamer/exports/*
+kinderkamer/__pycache__/*
+woodwork/__pycache__/*
+exports/*
