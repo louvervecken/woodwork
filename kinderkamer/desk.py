@@ -40,7 +40,7 @@ class Desk(closet.SheetFurniture):
 
         self.sheets = [blad, onderblad, onderblad2]
 
-class Sheleves(closet.SheetFurniture):
+class Shelves(closet.SheetFurniture):
     def __init__(self) -> None:
         super().__init__('shelves')
         shelve1_1 = Sheet(290, DEPTH, plane='XY', name='shelve1_1').set_z(DESK_HEIGHT + 600)
@@ -104,20 +104,3 @@ class DrawerWithFront(closet.SheetFurniture):
 
         self.sheets = (self.front, )
         self.sub_parts = (self.drawer, )
-
-
-ass = cq.Assembly(name='kinderkamer_two')
-ass.add(Desk().get_assembly())
-desk_closet = Closet()
-ass.add(desk_closet.get_assembly(), loc=cq.Location(cq.Vector(desk_closet.x, desk_closet.y, desk_closet.z)))
-shelves = Sheleves()
-ass.add(shelves.get_assembly(), loc=cq.Location(cq.Vector(shelves.x, shelves.y, shelves.z)))
-closets = closet.fixed_closets()
-ass.add(closets, loc=cq.Location(cq.Vector(0,0,0), cq.Vector((0, 0, 1)), 90) * cq.Location(cq.Vector(-3000, 1000,0)))
-show_object(ass)
-
-
-sheet.BirchPly18.store_sheet_list()
-sheet.BirchPly12.store_sheet_list()
-sheet.BirchPly6.store_sheet_list()
-sheet.BirchPlyWhiteFinish18.store_sheet_list()

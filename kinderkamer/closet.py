@@ -5,6 +5,7 @@ from woodwork import utils
 import woodwork.sheet as sheet
 
 from cq_server.ui import ui, show_object
+from cadquery import exporters
 
 
 FULL_WIDTH = 2500
@@ -44,6 +45,9 @@ class SheetFurniture:
                 name=sh.name)
         return ass
     
+    def export_step(self, file_path):
+        exporters.export(self.get_assembly().toCompound(), file_path)
+
     def show(self):
         show_object(self.get_assembly())
 
