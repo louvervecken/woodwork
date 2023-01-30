@@ -55,12 +55,12 @@ class SheetFurniture:
 class ClosetUnit(SheetFurniture):
     def __init__(self, name, width, height):
         super().__init__(name)
-        self.left = Sheet(DEPTH, height, plane='YZ', name='left')
-        self.right = Sheet(DEPTH, height, plane='YZ', name='right').set_x(width - Sheet.THICK)
-        self.bottom = Sheet(width - 2 * Sheet.THICK, DEPTH, plane='XY', name='bottom').set_x(Sheet.THICK)
-        self.top = Sheet(width - 2 * Sheet.THICK, DEPTH, plane='XY', name='top')\
+        self.left = Sheet(DEPTH, height, plane='YZ', name='left', parent_name=self.name)
+        self.right = Sheet(DEPTH, height, plane='YZ', name='right', parent_name=self.name).set_x(width - Sheet.THICK)
+        self.bottom = Sheet(width - 2 * Sheet.THICK, DEPTH, plane='XY', name='bottom', parent_name=self.name).set_x(Sheet.THICK)
+        self.top = Sheet(width - 2 * Sheet.THICK, DEPTH, plane='XY', name='top', parent_name=self.name)\
                    .set_x(Sheet.THICK).set_z(height - Sheet.THICK)
-        self.back = SheetBack(width, height, plane='XZ', name='back').set_y(DEPTH + SheetBack.THICK)
+        self.back = SheetBack(width, height, plane='XZ', name='back', parent_name=self.name).set_y(DEPTH + SheetBack.THICK)
 
         self.sheets = [self.left, self.right, self.bottom, self.top, self.back]
 
@@ -69,12 +69,12 @@ class ClosetDoorUnit(ClosetUnit):
     def __init__(self, name, width, height, shelves):
         super().__init__(name, width, height)
         self.door = SheetDoor(width - 2 * Sheet.THICK - 2 * SPACING, height - 2 * Sheet.THICK - 2 * SPACING,
-                              plane='XZ', name='door').set_x(Sheet.THICK + SPACING).set_z(Sheet.THICK + SPACING).set_y(SheetDoor.THICK)
+                              plane='XZ', name='door', parent_name=self.name).set_x(Sheet.THICK + SPACING).set_z(Sheet.THICK + SPACING).set_y(SheetDoor.THICK)
         self.sheets.append(self.door)
 
         self.shelve_list = list()
         for shelve in range(shelves):
-            sh = SheetShelve(width - 2 * Sheet.THICK, DEPTH - SheetDoor.THICK - SHELVE_SPACING, plane='XY', name=f'shelve{shelve}')\
+            sh = SheetShelve(width - 2 * Sheet.THICK, DEPTH - SheetDoor.THICK - SHELVE_SPACING, plane='XY', name=f'shelve{shelve}', parent_name=self.name)\
                 .set_x(Sheet.THICK).set_y(SheetDoor.THICK + SHELVE_SPACING).set_z(height / (shelves + 1) * (shelve + 1))
             self.shelve_list.append(sh)
             self.sheets.append(sh)
@@ -83,9 +83,9 @@ class ClosetDoorUnit(ClosetUnit):
 class ClosetEdge(SheetFurniture):
     def __init__(self, name, width, height, open_edge='right'):
         super().__init__(name)
-        self.side = Sheet(DEPTH - (SheetBackSide.THICK - SheetBack.THICK), height, plane='YZ', name=open_edge)
-        self.bottom = Sheet(width - Sheet.THICK, DEPTH - (SheetBackSide.THICK - SheetBack.THICK), plane='XY', name='bottom')
-        self.top = Sheet(width - Sheet.THICK, DEPTH - (SheetBackSide.THICK - SheetBack.THICK), plane='XY', name='top')
+        self.side = Sheet(DEPTH - (SheetBackSide.THICK - SheetBack.THICK), height, plane='YZ', name=open_edge, parent_name=self.name)
+        self.bottom = Sheet(width - Sheet.THICK, DEPTH - (SheetBackSide.THICK - SheetBack.THICK), plane='XY', name='bottom', parent_name=self.name)
+        self.top = Sheet(width - Sheet.THICK, DEPTH - (SheetBackSide.THICK - SheetBack.THICK), plane='XY', name='top', parent_name=self.name)
 
         if open_edge == 'left':
             self.side.set_x(width - Sheet.THICK)
@@ -95,7 +95,7 @@ class ClosetEdge(SheetFurniture):
 
         self.top.set_z(height - Sheet.THICK)
 
-        self.back = SheetBackSide(width, height, plane='XZ', name='back').set_y(DEPTH + SheetBack.THICK)
+        self.back = SheetBackSide(width, height, plane='XZ', name='back', parent_name=self.name).set_y(DEPTH + SheetBack.THICK)
 
         self.sheets = [self.side, self.bottom, self.top, self.back]
         self.x = 0
@@ -129,11 +129,11 @@ def random_closets():
 
 def fixed_closets():
     kasten = \
-        (((460, 1057, 2), (460, 210, 0), (460, 1053, 2)),
-         ((596, 1482, 0), (596, 360, 0), (596, 478, 1)),
-         ((467, 1396, 3), (467, 300, 0), (467, 624, 1)),
-         ((542, 1041, 2), (542, 456, 0), (542, 823, 2)),
-         ((435, 1400, 3), (435, 370, 0), (435, 550, 1)))
+        (((467, 1057, 2), (467, 210, 0), (467, 1053-70, 2)),
+         ((589, 1482-60, 0), (589, 360-10, 0), (589, 478, 1)),
+         ((467, 1396-70, 3), (467, 300, 0), (467, 624, 1)),
+         ((542, 1041, 2), (542, 456-30, 0), (542, 823-40, 2)),
+         ((435, 1400-40, 3), (435, 370, 0), (435, 550-30, 1)))
 
     # kasten = \
     #     (((460, 1057, 0),),)

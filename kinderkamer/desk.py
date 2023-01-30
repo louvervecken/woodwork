@@ -5,12 +5,8 @@ import math
 sys.path.append(str(pathlib.Path(__file__).parent.parent))
 
 from importlib import reload
-import woodwork.sheet
-reload(woodwork.sheet)
 
 import kinderkamer.closet as closet
-reload(closet)
-
 import cadquery as cq
 import woodwork.sheet as sheet
 from cq_server.ui import ui, show_object
@@ -33,9 +29,10 @@ FRONT_SPACING = 5
 class Desk(closet.SheetFurniture):
     def __init__(self) -> None:
         super().__init__('desk')
-        blad = Sheet(DESK_WIDTH-CLOSET_WIDTH, DEPTH, plane='XY', name='blad').set_z(DESK_HEIGHT - Sheet.THICK).set_x(CLOSET_WIDTH)
-        onderblad = Sheet(DESK_WIDTH-CLOSET_WIDTH, 100, plane='XY', name='onderblad1').set_z(DESK_HEIGHT - 2 * Sheet.THICK).set_x(CLOSET_WIDTH)
-        onderblad2 = Sheet(DESK_WIDTH-CLOSET_WIDTH, 100, plane='XY', name='onderblad2')\
+        blad = Sheet(DESK_WIDTH-CLOSET_WIDTH, DEPTH, plane='XY', name='blad', parent_name=self.name).set_z(DESK_HEIGHT - Sheet.THICK).set_x(CLOSET_WIDTH)
+        onderblad = Sheet(DESK_WIDTH-CLOSET_WIDTH, 100, plane='XY', name='onderblad1', parent_name=self.name).set_z(DESK_HEIGHT - 2 * Sheet.THICK).set_x(CLOSET_WIDTH)
+        onderblad2 = S
+        heet(DESK_WIDTH-CLOSET_WIDTH, 100, plane='XY', name='onderblad2', parent_name=self.name)\
             .set_z(DESK_HEIGHT - 2 * Sheet.THICK).set_x(CLOSET_WIDTH).set_y(DEPTH - 100)
 
         self.sheets = [blad, onderblad, onderblad2]
@@ -43,10 +40,10 @@ class Desk(closet.SheetFurniture):
 class Shelves(closet.SheetFurniture):
     def __init__(self) -> None:
         super().__init__('shelves')
-        shelve1_1 = Sheet(290, DEPTH, plane='XY', name='shelve1_1').set_z(DESK_HEIGHT + 600)
-        shelve1_2 = Sheet(290, DEPTH, plane='XY', name='shelve1_2').set_z(DESK_HEIGHT + 600 + Sheet.THICK)
-        shelve2_1 = Sheet(290, DEPTH, plane='XY', name='shelve2_1').set_z(DESK_HEIGHT + 600 * 2)
-        shelve2_2 = Sheet(290, DEPTH, plane='XY', name='shelve2_2').set_z(DESK_HEIGHT + 600 * 2 + Sheet.THICK)
+        shelve1_1 = Sheet(290, DEPTH, plane='XY', name='1_1', parent_name=self.name).set_z(DESK_HEIGHT + 600)
+        shelve1_2 = Sheet(290, DEPTH, plane='XY', name='1_2', parent_name=self.name).set_z(DESK_HEIGHT + 600 + Sheet.THICK)
+        shelve2_1 = Sheet(290, DEPTH, plane='XY', name='2_1', parent_name=self.name).set_z(DESK_HEIGHT + 600 * 2)
+        shelve2_2 = Sheet(290, DEPTH, plane='XY', name='2_2', parent_name=self.name).set_z(DESK_HEIGHT + 600 * 2 + Sheet.THICK)
 
         self.sheets = [shelve1_1, shelve1_2, shelve2_1, shelve2_2]
 
@@ -56,11 +53,11 @@ class Shelves(closet.SheetFurniture):
 class Closet(closet.SheetFurniture):
     def __init__(self):
         super().__init__(name='desk_kast')
-        left = Sheet(DEPTH - SheetBack.THICK, DESK_HEIGHT - FEET, plane='YZ', name='left')
+        left = Sheet(DEPTH - SheetBack.THICK, DESK_HEIGHT - FEET, plane='YZ', name='left', parent_name=self.name)
         right = left.clone(name='right').set_x(CLOSET_WIDTH - Sheet.THICK)
-        bottom = Sheet(CLOSET_WIDTH - 2 * Sheet.THICK, DEPTH - SheetBack.THICK, plane='XY', name='bottom').set_x(Sheet.THICK)
+        bottom = Sheet(CLOSET_WIDTH - 2 * Sheet.THICK, DEPTH - SheetBack.THICK, plane='XY', name='bottom', parent_name=self.name).set_x(Sheet.THICK)
         top = bottom.clone(name='top').set_x(Sheet.THICK).set_z(DESK_HEIGHT - FEET - Sheet.THICK)
-        back = SheetBack(CLOSET_WIDTH, DESK_HEIGHT - FEET, plane='XZ', name='back').set_y(DEPTH)
+        back = SheetBack(CLOSET_WIDTH, DESK_HEIGHT - FEET, plane='XZ', name='back', parent_name=self.name).set_y(DEPTH)
 
         self.sheets = [left, right, top, bottom, back]
 
@@ -82,12 +79,12 @@ class Closet(closet.SheetFurniture):
 class Drawer(closet.SheetFurniture):
     def __init__(self, name, width, depth, height) -> None:
         super().__init__(name)
-        left = SheetDraw(depth, height, plane='YZ', name='left').set_z(SheetDraw.THICK)
+        left = SheetDraw(depth, height, plane='YZ', name='left', parent_name=self.name).set_z(SheetDraw.THICK)
         right = left.clone(name='right').set_x(width - SheetDraw.THICK).set_z(SheetDraw.THICK)
-        back = SheetDraw(width - 2 * SheetDraw.THICK, height, plane='XZ', name='back').set_x(SheetDraw.THICK)\
+        back = SheetDraw(width - 2 * SheetDraw.THICK, height, plane='XZ', name='back', parent_name=self.name).set_x(SheetDraw.THICK)\
             .set_y(left.width).set_z(SheetDraw.THICK)
         front = back.clone(name='front').set_x(SheetDraw.THICK).set_z(SheetDraw.THICK).set_y(SheetDraw.THICK)
-        bottom = SheetDraw(front.width + 2 * SheetDraw.THICK, left.width, plane='XY', name='bottom')
+        bottom = SheetDraw(front.width + 2 * SheetDraw.THICK, left.width, plane='XY', name='bottom', parent_name=self.name)
 
         self.sheets = [left, right, back, front, bottom]
 
@@ -100,7 +97,7 @@ class DrawerWithFront(closet.SheetFurniture):
         self.drawer.y = SheetDoor.THICK
         self.drawer.z = z_offset
 
-        self.front = SheetDoor(front_width, front_height, plane='XZ', name='front').set_y(SheetDoor.THICK)
+        self.front = SheetDoor(front_width, front_height, plane='XZ', name='front', parent_name=self.name).set_y(SheetDoor.THICK)
 
         self.sheets = (self.front, )
         self.sub_parts = (self.drawer, )

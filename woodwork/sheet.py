@@ -7,7 +7,7 @@ class BirchPly18:
     THICK = 18
     instances = list()
     
-    def __init__(self, width, height, plane, name=None):
+    def __init__(self, width, height, plane, name=None, parent_name=None):
         """
         plane: 'XY', 'XZ', 'YZ'
         """
@@ -15,6 +15,7 @@ class BirchPly18:
         self.height = height
         self.plane = plane
         self.name = name
+        self.parent_name = parent_name
         self.box = cq.Workplane(plane).rect(width, height, centered=False).extrude(self.THICK)
         self.x = 0
         self.y = 0
@@ -37,7 +38,7 @@ class BirchPly18:
         return self
 
     def clone(self, name=None):
-        return type(self)(self.width, self.height, self.plane, name)
+        return type(self)(self.width, self.height, self.plane, name, self.parent_name)
 
     @classmethod
     def store_sheet_list(cls, file_name=None):
@@ -56,7 +57,12 @@ class BirchPly18:
                     if sheet != sh and sheet.width == sh.width and sheet.height == sh.height:
                         count += 1
                         skip.append(sh)
-                f.write(f"{sheet.height:.1f},{sheet.width:.1f}, {count},{sheet.name},True\n")
+                f.write(f"{sheet.height:.1f},{sheet.width:.1f}, {count},{sheet.label},True\n")
+
+    @property
+    def label(self):
+        return f"{self.parent_name}_{self.name}_{self.plane}_w{int(self.width)}_h{int(self.height)}"
+
 
 
 class BirchPly12(BirchPly18):

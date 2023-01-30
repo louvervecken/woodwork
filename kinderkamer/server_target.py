@@ -14,10 +14,10 @@ from kinderkamer.desk import Closet as DeskCloset
 from kinderkamer.desk import Shelves
 
 
+closets = fixed_closets()
 desk = Desk()
 desk_closet = DeskCloset()
 shelves = Shelves()
-closets = fixed_closets()
 
 ass = cq.Assembly(name='kinderkamer_two')
 ass.add(desk.get_assembly())
@@ -35,3 +35,5 @@ sheet.BirchPly18.store_sheet_list()
 sheet.BirchPly12.store_sheet_list()
 sheet.BirchPly6.store_sheet_list()
 sheet.BirchPlyWhiteFinish18.store_sheet_list()
+
+pass
